@@ -14,7 +14,7 @@ class MultiHeadAttention(nn.Module):
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
 
         self.out_proj = nn.Linear(d_out, d_out)
-        self.dropout = dropout
+        self.dropout = nn.Dropout(dropout)
         self.register_buffer(
             "mask",
             torch.triu(torch.ones(context_length, context_length), diagonal=1)
