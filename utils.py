@@ -1,5 +1,8 @@
 import torch
 import torch.nn as nn
+import tiktoken
+from torch.utils.data import Dataset, DataLoader
+
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
         super().__init__()
@@ -174,6 +177,56 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
         idx_next = torch.argmax(probas, dim=-1, keepdim=True)
         idx = torch.cat((idx, idx_next), dim=-1) # add the newly generated token to the original input
 
-    return idx            
+    return idx      
+
+class GPTDatasetV1(Dataset):
+    def __init__(self, txt, tokenizer, max_length, stride):
+        """
+        Class for loading data
+        txt: This is the text to be encoded
+        tokenizer: This is the tokenizer to use
+        max_length: This is the max length of the input sequences
+        stride: This is tokens to skip when creating input sequences.
+        """
+        self.input_ids = []
+        self.target_ids = []
+
+        token_ids = tokenizer.encode(txt)
+
+        for i in range(0, len(token_ids)-max_length, stride):
+            input_chunk = token_ids[i:i+max_length]
+            target_chunk = token_ids[i+1: i+1+max_length]
+            self.input_ids.append(torch.tensor(input_chunk))
+            self.target_ids.append(torch.tensor(target_chunk))
+
+    def __len__(self):
+        return len(self.input_ids)
+    
+    def __getitem__(self, idx):
+        return self.input_ids[idx], self.target_ids[idx]
+
+
+def create_dataloader_v1(txt, batch_size=4, max_length=256, stride=128, shuffle=True, drop_last=True, num_workers=0):
+    """
+    Function to create an efficient dataloader. It serves as an iterator to generate data without having to load all the data in memory.
+    Args:
+    - txt: The text to use for creating the training examples
+    - batch_size: create batches of what size
+    - max_length: length of each training sample
+    - stride: The stride to take when creating samples, so that samples are not continuous
+    - shuffle: Shuffle the data or not every epoch
+    - drop_last: Set to drop the last sample if the last sample would be incomplete
+    - num_workers: number of workers to use
+    """
+    tokenizer = tiktoken.get_encoding('gpt2')
+    dataset = GPTDatasetV1(txt, tokenizer, max_length, stride)
+    dataloader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        drop_last=drop_last,
+        num_workers=num_workers
+    )
+    return dataloader
 
 
