@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
+FROM nvidia/cuda:13.0.0-devel-ubuntu22.04
 
 # Set environment variables to avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -79,33 +79,15 @@ RUN . /opt/venv/bin/activate && \
 # Set non-sensitive environment variables only
 ENV ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
 
-# Create Codex config
-RUN mkdir -p /root/.codex
-RUN cat <<'EOF' > /root/.codex/config.toml
-[model_providers.z_ai]
-name = "Z.ai - GLM Coding Plan"
-base_url = "https://api.z.ai/api/coding/paas/v4"
-env_key = "Z_AI_API_KEY"
-wire_api = "chat"
-query_params = {}
+# Copy container setup script
+COPY scripts/container-setup.sh /usr/local/bin/container-setup.sh
+RUN chmod +x /usr/local/bin/container-setup.sh
 
-[profiles.glm_4_6]
-model = "glm-4.6"
-model_provider = "z_ai"
-EOF
+# Create configuration directories
+RUN mkdir -p /root/.codex /root/.claude
 
-# Create Claude config
-RUN mkdir -p /root/.claude
-RUN cat <<'EOF' > /root/.claude/setting.json
-{
-  "env": {
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-4.5-air",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-4.6",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-4.6"
-  },
-  "alwaysThinkingEnabled": false
-}
-EOF
+# Run container setup on startup
+ENTRYPOINT ["/usr/local/bin/container-setup.sh"]
 
 # Expose ports
 EXPOSE 8888 6006
