@@ -94,3 +94,51 @@ EXPOSE 8888 6006
 
 # Keep container running
 CMD ["tail", "-f", "/dev/null"]
+
+# =============================================================================
+# DOCKER USAGE COMMANDS
+# =============================================================================
+
+# 1. BUILD IMAGE AND CONTAINER:
+#    docker-compose up -d --build
+#    OR
+#    docker build -t llm-from-scratch .
+#    docker-compose up -d
+
+# 2. ENTER RUNNING CONTAINER:
+#    docker-compose exec app bash
+#    OR
+#    docker exec -it llm-from-scratch bash
+
+# 3. STOP AND START CONTAINER:
+#    docker-compose stop
+#    docker-compose start
+#    OR
+#    docker stop llm-from-scratch
+#    docker start llm-from-scratch
+
+# 4. START JUPYTER IN CONTAINER:
+#    # Enter container first: docker-compose exec app bash
+#    jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+#    # Get token: jupyter notebook list
+#    # Access at: http://localhost:8888/?token=<your-token>
+
+# 5. CLAUDE CODE AND CODEX CONFIGURATION:
+#    # Check current configuration:
+#    claude-config
+#
+#    # Test API connections:
+#    claude-test
+#
+#    # Switch Claude Code provider:
+#    claude-switch zai        # Use Z.AI provider
+#    claude-switch anthropic # Use Anthropic provider
+#
+#    # Use Claude Code:
+#    claude-code "help me understand this code"
+#
+#    # Use Codex:
+#    codex "explain this function"
+#
+#    # Configuration is loaded from .env.local file in project root
+# =============================================================================
