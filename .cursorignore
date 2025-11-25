@@ -1,0 +1,7 @@
+# Cursor will ignore these files/patterns from AI features
+# We want to allow .env.example since it's just a template
+
+# Ignore actual env files with secrets
+.env
+.env.local
+.env.production

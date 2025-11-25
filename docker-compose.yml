@@ -4,31 +4,6 @@ services:
     container_name: llm-from-scratch
     working_dir: /workspace
     shm_size: 16g
-    environment:
-      # Claude Code Configuration
-      - CLAUDE_DEFAULT_PROVIDER=${CLAUDE_DEFAULT_PROVIDER:-zai}
-
-      # Z.AI Configuration
-      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.z.ai/api/anthropic}
-      - ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN:-}
-
-      # Chutes.ai Configuration
-      - CHUTES_API_KEY=${CHUTES_API_KEY:-}
-      - CHUTES_BASE_URL=${CHUTES_BASE_URL:-https://claude.chutes.ai}
-      - CHUTES_BACKEND_URL=${CHUTES_BACKEND_URL:-https://llm.chutes.ai}
-
-      # Codex Configuration (Z.AI)
-      - Z_AI_API_KEY=${Z_AI_API_KEY:-}
-      - Z_AI_BASE_URL=${Z_AI_BASE_URL:-https://api.z.ai/api/coding/paas/v4}
-
-      # Codex Configuration (Chutes.ai)
-      - CHUTES_CODEX_API_KEY=${CHUTES_CODEX_API_KEY:-}
-      - CHUTES_CODEX_BASE_URL=${CHUTES_CODEX_BASE_URL:-https://api.chutes.ai/v1}
-
-      # Model Configuration
-      - ANTHROPIC_DEFAULT_HAIKU_MODEL=${ANTHROPIC_DEFAULT_HAIKU_MODEL:-glm-4.5-air}
-      - ANTHROPIC_DEFAULT_SONNET_MODEL=${ANTHROPIC_DEFAULT_SONNET_MODEL:-glm-4.6}
-      - ANTHROPIC_DEFAULT_OPUS_MODEL=${ANTHROPIC_DEFAULT_OPUS_MODEL:-glm-4.6}
     env_file:
       - .env.local
     volumes:
