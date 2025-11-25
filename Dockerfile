@@ -66,15 +66,15 @@ ENV PATH="/root/.local/bin:$PATH"
 # Create UV virtual environment
 RUN uv venv --python=3.12 /opt/venv
 
-# Copy requirements
-COPY requirements.txt /workspace/requirements.txt
+# Copy pyproject.toml and uv.lock
+COPY pyproject.toml uv.lock /workspace/
 
 # Install PyTorch + dependencies
 RUN . /opt/venv/bin/activate && \
     echo "Installing PyTorch with CUDA support..." && \
     uv pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu121 && \
-    echo "Installing remaining packages from requirements.txt..." && \
-    uv pip install -r /workspace/requirements.txt
+    echo "Installing remaining packages from pyproject.toml..." && \
+    cd /workspace && uv pip install -e .
 
 # Set non-sensitive environment variables only
 ENV ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
