@@ -131,8 +131,12 @@ CMD ["tail", "-f", "/dev/null"]
 #    claude-test
 #
 #    # Switch Claude Code provider:
-#    claude-switch zai        # Use Z.AI provider
-#    claude-switch anthropic # Use Anthropic provider
+#    claude-switch zai     # Use Z.AI provider
+#    claude-switch chutes  # Use Chutes.ai provider
+#
+#    # Switch Codex provider:
+#    codex-switch zai     # Use Z.AI provider for Codex
+#    codex-switch chutes  # Use Chutes.ai provider for Codex
 #
 #    # Use Claude Code:
 #    claude-code "help me understand this code"
@@ -141,4 +145,5 @@ CMD ["tail", "-f", "/dev/null"]
 #    codex "explain this function"
 #
 #    # Configuration is loaded from .env.local file in project root
+#    # Add your Chutes.ai API keys to .env.local to use Chutes.ai providers
 # =============================================================================
