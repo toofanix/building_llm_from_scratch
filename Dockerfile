@@ -76,15 +76,44 @@ RUN . /opt/venv/bin/activate && \
     echo "Installing remaining packages from pyproject.toml..." && \
     cd /workspace && uv pip install -e .
 
-# Copy container setup script
-COPY scripts/container-setup.sh /usr/local/bin/container-setup.sh
-RUN chmod +x /usr/local/bin/container-setup.sh
+# Create Codex config
+RUN mkdir -p /root/.codex
+RUN cat <<'EOF' > /root/.codex/config.toml
+[model_providers.z_ai]
+name = "Z.ai - GLM Coding Plan"
+base_url = "https://api.z.ai/api/coding/paas/v4"
+env_key = "Z_AI_API_KEY"
+wire_api = "chat"
+query_params = {}
 
-# Create configuration directories
-RUN mkdir -p /root/.codex /root/.claude
+[model_providers.chutes]
+name = "Chutes.ai - Coding Provider"
+base_url = "https://llm.chutes.ai/v1/"
+env_key = "CHUTES_CODEX_API_KEY"
+wire_api = "chat"
+query_params = {}
 
-# Run container setup on startup
-ENTRYPOINT ["/usr/local/bin/container-setup.sh"]
+[profiles.glm]
+model = "glm-4.6"
+model_provider = "z_ai"
+
+[profiles.kimi]
+model = "moonshotai/Kimi-K2-Thinking"
+model_provider = "chutes"
+EOF
+
+# Create Claude config
+RUN mkdir -p /root/.claude
+RUN cat <<'EOF' > /root/.claude/setting.json
+{
+  "env": {
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-4.5-air",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-4.6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-4.6"
+  },
+  "alwaysThinkingEnabled": false
+}
+EOF
 
 # Expose ports
 EXPOSE 8888 6006
@@ -120,12 +149,9 @@ CMD ["tail", "-f", "/dev/null"]
 #    # Get token: jupyter notebook list
 #    # Access at: http://localhost:8888/?token=<your-token>
 
-# 5. CLAUDE CODE AND CODEX CONFIGURATION:
-#    # Check current configuration:
-#    claude-config
-#
-#    # Test API connections:
-#    test-apis
+# 5. CLAUDE CODE AND CODEX USAGE:
+#    # Configuration is pre-configured in the container
+#    # Just set your API keys in .env.local and use the tools directly
 #
 #    # Use Claude Code (Z.AI provider only):
 #    claude-code "help me understand this code"
@@ -136,10 +162,5 @@ CMD ["tail", "-f", "/dev/null"]
 #    # Use Codex with Chutes.ai provider (moonshotai/Kimi-K2-Thinking):
 #    codex --profile kimi_k2 "refactor this code"
 #
-#    # Get instructions for switching Codex providers:
-#    codex-switch zai     # Instructions for Z.AI provider
-#    codex-switch chutes  # Instructions for Chutes.ai provider
-#
-#    # Configuration is loaded from .env.local file in project root
-#    # Claude Code uses Z.AI only, Codex supports both Z.AI and Chutes.ai
+#    # API keys are loaded from .env.local file in project root
 # =============================================================================

@@ -21,11 +21,17 @@ This project includes a Docker environment with GPU support and AI coding assist
    ```
 
 2. **Configure your API keys in `.env.local`:**
-   - `ANTHROPIC_AUTH_TOKEN`: Your Z.AI API key for Claude Code
-   - `Z_AI_API_KEY`: Your Z.AI API key for Codex (optional)
-   - `CHUTES_CODEX_API_KEY`: Your Chutes.ai API key for Codex (optional)
-
-   See `ENV_SETUP.md` for the complete environment variable structure.
+   ```bash
+   # Claude Code - Z.AI Provider
+   ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
+   ANTHROPIC_AUTH_TOKEN=your_zai_api_key_here
+   
+   # Codex - Z.AI Provider
+   Z_AI_API_KEY=your_zai_codex_api_key_here
+   
+   # Codex - Chutes.ai Provider
+   CHUTES_CODEX_API_KEY=your_chutes_codex_api_key_here
+   ```
 
 3. **Build and start the container:**
    ```bash
@@ -39,10 +45,10 @@ This project includes a Docker environment with GPU support and AI coding assist
 
 ### AI Coding Assistants
 
-The container includes two AI coding assistants:
+The container includes two AI coding assistants with pre-configured settings.
 
-#### Claude Code (Z.AI Provider Only)
-Claude Code is configured to use only the Z.AI provider with the GLM models. Configuration is automatically set via environment variables in `.bashrc`.
+#### Claude Code (Z.AI Provider)
+Claude Code uses the Z.AI provider with GLM models. Configuration is automatically set during container build.
 
 **Usage:**
 ```bash
@@ -51,7 +57,7 @@ claude-code "explain the attention mechanism"
 ```
 
 #### Codex (Dual Provider Support)
-Codex supports both Z.AI and Chutes.ai providers, configured via `config.toml`.
+Codex supports both Z.AI and Chutes.ai providers via pre-configured profiles.
 
 **Available Profiles:**
 - `glm_4_6`: Z.AI provider with glm-4.6 model
@@ -65,26 +71,6 @@ codex --profile glm_4_6 "explain this function"
 # Use Chutes.ai provider (Kimi-K2-Thinking)
 codex --profile kimi_k2 "refactor this code"
 ```
-
-### Utility Commands
-
-Inside the container, you have access to these utility commands:
-
-- **`claude-config`**: Display current configuration for Claude Code and Codex
-  ```bash
-  claude-config
-  ```
-
-- **`test-apis`**: Test API connections to verify your credentials
-  ```bash
-  test-apis
-  ```
-
-- **`codex-switch <provider>`**: Get instructions for using different Codex providers
-  ```bash
-  codex-switch zai      # Instructions for Z.AI provider
-  codex-switch chutes   # Instructions for Chutes.ai provider
-  ```
 
 ### Jupyter Notebook
 
