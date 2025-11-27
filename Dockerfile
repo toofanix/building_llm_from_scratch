@@ -76,9 +76,6 @@ RUN . /opt/venv/bin/activate && \
     echo "Installing remaining packages from pyproject.toml..." && \
     cd /workspace && uv pip install -e .
 
-# Set non-sensitive environment variables only
-ENV ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
-
 # Copy container setup script
 COPY scripts/container-setup.sh /usr/local/bin/container-setup.sh
 RUN chmod +x /usr/local/bin/container-setup.sh
@@ -128,22 +125,21 @@ CMD ["tail", "-f", "/dev/null"]
 #    claude-config
 #
 #    # Test API connections:
-#    claude-test
+#    test-apis
 #
-#    # Switch Claude Code provider:
-#    claude-switch zai     # Use Z.AI provider
-#    claude-switch chutes  # Use Chutes.ai provider
-#
-#    # Switch Codex provider:
-#    codex-switch zai     # Use Z.AI provider for Codex
-#    codex-switch chutes  # Use Chutes.ai provider for Codex
-#
-#    # Use Claude Code:
+#    # Use Claude Code (Z.AI provider only):
 #    claude-code "help me understand this code"
 #
-#    # Use Codex:
-#    codex "explain this function"
+#    # Use Codex with Z.AI provider (glm-4.6):
+#    codex --profile glm_4_6 "explain this function"
+#
+#    # Use Codex with Chutes.ai provider (moonshotai/Kimi-K2-Thinking):
+#    codex --profile kimi_k2 "refactor this code"
+#
+#    # Get instructions for switching Codex providers:
+#    codex-switch zai     # Instructions for Z.AI provider
+#    codex-switch chutes  # Instructions for Chutes.ai provider
 #
 #    # Configuration is loaded from .env.local file in project root
-#    # Add your Chutes.ai API keys to .env.local to use Chutes.ai providers
+#    # Claude Code uses Z.AI only, Codex supports both Z.AI and Chutes.ai
 # =============================================================================
