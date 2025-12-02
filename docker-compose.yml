@@ -18,6 +18,7 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    runtime: nvidia
     stdin_open: true
     tty: true
     command: tail -f /dev/null
