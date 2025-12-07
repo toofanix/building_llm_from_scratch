@@ -267,6 +267,14 @@ def evaluate_model(model, train_loader, val_loader, device, eval_iter):
     model.train() # set the model back to train mode
     return train_loss, val_loss
 
+def text_to_token_ids(text, tokenizer):
+    encoded = tokenizer.encode(text, allowed_special={"<|endoftext|>"})
+    encode_tensor = torch.tensor(encoded).unsqueeze(0)
+    return encode_tensor
+
+def token_ids_to_text(token_ids, tokenizer):
+    flat = token_ids.squeeze(0)
+    return tokenizer.decode(flat.tolist())
 
 def generate_and_print_sample(model, tokenizer, device, start_context):
     model.eval() # set model in eval mode
