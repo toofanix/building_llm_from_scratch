@@ -50,6 +50,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     npm install -g @charmland/crush && \
     npm install -g @anthropic-ai/claude-code && \
     npm install -g @openai/codex && \
+    npm install -g opencode-ai && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -67,14 +68,14 @@ ENV PATH="/root/.local/bin:$PATH"
 RUN uv venv --python=3.12 /opt/venv
 
 # Copy pyproject.toml and uv.lock
-COPY pyproject.toml uv.lock /workspace/
+COPY requirements.txt /workspace/
 
 # Install PyTorch + dependencies
 RUN . /opt/venv/bin/activate && \
     echo "Installing PyTorch with CUDA support..." && \
     uv pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu121 && \
-    echo "Installing remaining packages from pyproject.toml..." && \
-    cd /workspace && uv pip install -e .
+    echo "Installing remaining packages from requirements.txt..." && \
+    cd /workspace && uv pip install --no-cache-dir -r requirements.txt
 
 # Create Codex config
 RUN mkdir -p /root/.codex
@@ -164,3 +165,4 @@ CMD ["tail", "-f", "/dev/null"]
 #
 #    # API keys are loaded from .env.local file in project root
 # =============================================================================
+

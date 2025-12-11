@@ -171,3 +171,4 @@ data/tinystories_val_small.txt
 
 # Claude
 .claude/
+.claude/settings.local.json

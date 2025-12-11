@@ -304,6 +304,9 @@ def train_model_simple(model, train_loader, val_loader, optimizer, device, num_e
             tokens_seen += input_batch.numel()
             global_step += 1
 
+            if global_step % 100 == 0:
+                print(f"Ep {epoch+1} (Step {global_step:06d}): Train Loss {loss.item():.3f}")
+
             if global_step % eval_freq == 0:
                 train_loss, val_loss = evaluate_model(model , train_loader, val_loader, device, eval_iter)
                 train_losses.append(train_loss)
@@ -313,6 +316,3 @@ def train_model_simple(model, train_loader, val_loader, optimizer, device, num_e
 
         generate_and_print_sample(model, tokenizer, device, start_context)
     return train_losses, val_losses, track_tokens_seen
-
-
-
