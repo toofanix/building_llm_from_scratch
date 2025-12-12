@@ -169,6 +169,10 @@ data/tinystoriesclean.parquet
 data/tinystories_train_small.txt
 data/tinystories_val_small.txt
 
+# Model files
+models/
+*.pth
+
 # Claude
 .claude/
 .claude/settings.local.json

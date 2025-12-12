@@ -316,3 +316,35 @@ def train_model_simple(model, train_loader, val_loader, optimizer, device, num_e
 
         generate_and_print_sample(model, tokenizer, device, start_context)
     return train_losses, val_losses, track_tokens_seen
+
+
+def save_model(model, filepath):
+    """
+    Save model state_dict to file
+
+    Args:
+        model: PyTorch model to save
+        filepath: Path where to save the model (.pth extension)
+    """
+    torch.save(model.state_dict(), filepath)
+    print(f"Model saved to {filepath}")
+
+
+def load_model(filepath, config, device='cpu'):
+    """
+    Load model from saved state_dict
+
+    Args:
+        filepath: Path to saved model file (.pth)
+        config: Model configuration dictionary
+        device: Device to load model on ('cpu' or 'cuda')
+
+    Returns:
+        Loaded PyTorch model
+    """
+    model = GPTModel(config)
+    model.load_state_dict(torch.load(filepath, map_location=device))
+    model.to(device)
+    model.eval()
+    print(f"Model loaded from {filepath}")
+    return model
